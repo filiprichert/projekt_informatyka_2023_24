@@ -58,13 +58,14 @@ public:
 	int HP;
 	int HPMax;
 
-	Enemy(Texture* texture, Vector2f pos) {
+	Enemy(Texture* texture, Vector2u windowSize) {
 		this->HPMax = rand() % 3 + 1;
 		this->HP = this->HPMax;
 
 		this->shape.setTexture(*texture);
 		this->shape.setScale(0.2f, 0.2f);
-		this->shape.setPosition(pos);
+		this->shape.setPosition(rand() % (int)(windowSize.x - this->shape.getGlobalBounds().width), 0.0f);
+		//this->shape.setPosition(rand() % static_cast<int>(windowSize.x - this->shape.getGlobalBounds().width), 0.0f);
 	}
 	~Enemy(){}
 };
@@ -74,7 +75,7 @@ int main()
 {
 	srand(time(NULL));
 
-	RenderWindow window(VideoMode(800, 600), "Space shooter");
+	RenderWindow window(VideoMode(1000, 800), "Space shooter");
 	window.setFramerateLimit(60);
 
 
@@ -99,7 +100,11 @@ int main()
 	int shootTimer = 20;
 
 	//wrog init
+	int enemySpawnTimer = 0;
 	std::vector<Enemy> enemies;
+
+	
+
 
 	while (window.isOpen())
 	{
@@ -109,6 +114,7 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
+
 		//Gracz 
 		if (Keyboard::isKeyPressed(Keyboard::W))
 			player.shape.move(0.f, -10.f);
@@ -119,7 +125,7 @@ int main()
 		if (Keyboard::isKeyPressed(Keyboard::D))
 			player.shape.move(10.f, 0.f);
 
-		if (shootTimer < 20)
+		if (shootTimer < 25)
 			shootTimer++; 
 
 		if (Mouse::isButtonPressed(Mouse::Left) && shootTimer >= 20) { //sprzelanie
@@ -147,24 +153,66 @@ int main()
 
 
 			//poza ekranem 
-			if (player.missile[i].shape.getPosition().x > window.getSize().x)
+			if (player.missile[i].shape.getPosition().x > window.getSize().x) {
 				player.missile.erase(player.missile.begin() + i);
+				break;
+			}
 			
 			//kolizja wroga
-
+			for (size_t k = 0; k < enemies.size(); k++)
+			{
+				if (player.missile[i].shape.getGlobalBounds().intersects(enemies[k].shape.getGlobalBounds())) {
+					enemies.erase(enemies.begin() + k);
+					player.missile.erase(player.missile.begin() + i);
+					break;
+				}
+			}
 		};
 
 		
 
-		//wrog
+		//Wrog
+		if(enemySpawnTimer < 25)
+			enemySpawnTimer++;
+
+		if (enemySpawnTimer >= 25) {
+			enemies.push_back(Enemy(&enemyTex, window.getSize()));
+			enemySpawnTimer = 0;
+		}
+
+
+		for (size_t i = 0; i < enemies.size(); i++)
+		{
+			enemies[i].shape.move(0.f, 4.f);
+
+			if (enemies[i].shape.getPosition().x <= 0 - enemies[i].shape.getGlobalBounds().width) {
+				enemies.erase(enemies.begin() + i);
+				break;
+			}
+
+			if (enemies[i].shape.getGlobalBounds().intersects(player.shape.getGlobalBounds())) {
+				enemies.erase(enemies.begin() + i);
+				player.HP--; //zadawanie obrarzen graczowi 
+				break;
+			}
+
+		}
 
 
 		//rysowanie
 		window.clear();
+		//gracz
 		window.draw(player.shape);
 
+		//pociski
 		for (size_t i = 0; i < player.missile.size(); i++) {
 			window.draw(player.missile[i].shape);
+		}
+
+		//wrog
+		for (size_t i = 0; i < enemies.size(); i++)
+		{
+			window.draw(enemies[i].shape);
 		}
 
 		window.display();

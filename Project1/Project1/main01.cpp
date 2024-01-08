@@ -71,7 +71,7 @@ public:
 };
 
 
-void nowa_gra()
+void nowa_gra(RenderWindow& window)
 {
 	srand(time(NULL));
 
@@ -107,7 +107,7 @@ void nowa_gra()
 	gameOverText.setFont(font);
 	gameOverText.setCharacterSize(40);
 	gameOverText.setFillColor(Color::Red);
-	gameOverText.setPosition(100.f, window.getSize().y/2);
+	gameOverText.setPosition(100.f, window.getSize().y / 2);
 	gameOverText.setString("Koniec gry!!!");
 
 	//gracz init
@@ -129,7 +129,7 @@ void nowa_gra()
 	eHpText.setCharacterSize(24);
 	eHpText.setFillColor(Color::Red);
 
-	
+
 
 
 	while (window.isOpen())
@@ -160,7 +160,7 @@ void nowa_gra()
 			if (shootTimer < 15)
 				shootTimer++;
 
-			if (Mouse::isButtonPressed(Mouse::Left) && shootTimer >= 15) { //sprzelanie
+			if (Keyboard::isKeyPressed(Keyboard::Space) && shootTimer >= 15) { //sprzelanie
 				player.missile.push_back(Missile(&missileTex, player.shape.getPosition()));
 				shootTimer = 0;
 				/*music.play();*/
@@ -269,145 +269,102 @@ void nowa_gra()
 
 
 		window.display();
-		
+
 	}
-
-
-	
-	
 }
-//Menu
-enum MenuOption {
-	Graj,
-	Wczytaj,
-	OGrze,
-	Wyjdz
-};
 
-class GameMenu {
-public:
-	GameMenu(sf::RenderWindow& window) : window(window) {
-		font.loadFromFile("Fonts/Stereotones.otf"); // Ustaw odpowiedni¹ œcie¿kê do pliku czcionki
-		Initialize();
-	}
 
-	MenuOption Run() {
-		while (window.isOpen()) {
-			ProcessEvents();
-			Render();
-		}
 
-		return Wyjdz; // W przypadku zamkniêcia okna
-	}
 
-private:
-	static const int OptionCount = 4;
-	int selectedOptionIndex = 0;
-	sf::Font font;
-	sf::Text text;
-	sf::RenderWindow& window;
-	std::vector<std::string> options;
-	std::vector<sf::Text> menuTexts;
 
-	void Initialize() {
-		text.setFont(font);
-		text.setCharacterSize(30);
-		text.setFillColor(sf::Color::White);
+// Funkcja do wyœwietlania menu
+void wyswietl_menu(RenderWindow& window) {
+	Font font;
+	font.loadFromFile("Fonts/Stereotones.otf");
 
-		options = { "Graj", "Wczytaj", "O Grze", "Wyjdz" };
+	Text grajText, wynikiText, oGrzeText, wyjdzText;
+	grajText.setFont(font);
+	grajText.setCharacterSize(40);
+	grajText.setFillColor(Color::White);
+	grajText.setString("Graj");
+	grajText.setPosition(600.f, 300.f);
 
-		for (int i = 0; i < OptionCount; ++i) {
-			text.setString(options[i]);
-			text.setPosition((window.getSize().x - text.getLocalBounds().width) / 2, 150 + i * 60);
-			menuTexts.push_back(text);
-		}
-	}
+	wynikiText.setFont(font);
+	wynikiText.setCharacterSize(40);
+	wynikiText.setFillColor(Color::White);
+	wynikiText.setString("Wyniki");
+	wynikiText.setPosition(600.f, 400.f);
 
-	void ProcessEvents() {
-		sf::Event event;
+	oGrzeText.setFont(font);
+	oGrzeText.setCharacterSize(40);
+	oGrzeText.setFillColor(Color::White);
+	oGrzeText.setString("O Grze");
+	oGrzeText.setPosition(600.f, 500.f);
+
+	wyjdzText.setFont(font);
+	wyjdzText.setCharacterSize(40);
+	wyjdzText.setFillColor(Color::White);
+	wyjdzText.setString("Wyjdz");
+	wyjdzText.setPosition(600.f, 600.f);
+
+	while (window.isOpen()) {
+		Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
 				window.close();
-			else if (event.type == sf::Event::KeyPressed) {
-				HandleKeyPress(event.key.code);
+
+			if (event.type == Event::MouseButtonPressed) {
+				if (event.mouseButton.button == Mouse::Left) {
+					Vector2f mousePos = window.mapPixelToCoords(Mouse::getPosition(window));
+					if (grajText.getGlobalBounds().contains(mousePos)) {
+						// Opcja Graj - wybór poziomu trudnoœci
+						// ... (Dodaj kod wybieraj¹cy poziom trudnoœci)
+					}
+					else if (wynikiText.getGlobalBounds().contains(mousePos)) {
+						// Opcja Wyniki - wyœwietlanie wyników
+						// ... (Dodaj kod wyœwietlaj¹cy wyniki)
+					}
+					else if (oGrzeText.getGlobalBounds().contains(mousePos)) {
+						// Opcja O Grze - wyœwietlanie instrukcji
+						// ... (Dodaj kod wyœwietlaj¹cy instrukcjê)
+					}
+					else if (wyjdzText.getGlobalBounds().contains(mousePos)) {
+						// Opcja Wyjdz - pytanie o potwierdzenie
+						return;
+					}
+				}
 			}
 		}
-	}
 
-	void HandleKeyPress(sf::Keyboard::Key key) {
-		if (key == sf::Keyboard::Up) {
-			MoveUp();
-		}
-		else if (key == sf::Keyboard::Down) {
-			MoveDown();
-		}
-		else if (key == sf::Keyboard::Enter) {
-			PerformAction();
-		}
-	}
-
-	void PerformAction() {
-		switch (static_cast<MenuOption>(selectedOptionIndex)) {
-		case Graj:
-			nowa_gra(); // Tutaj mo¿esz wywo³aæ swoj¹ funkcjê Graj
-			break;
-		case Wczytaj:
-			// Wczytaj grê - dodaj odpowiedni kod
-			break;
-		case OGrze:
-			// Informacje o grze - dodaj odpowiedni kod
-			break;
-		case Wyjdz:
-			window.close(); // Zamkniêcie okna - mo¿esz zast¹piæ w³aœciw¹ akcj¹
-			break;
-		}
-	}
-
-
-	void MoveUp() {
-		if (selectedOptionIndex > 0) {
-			selectedOptionIndex--;
-		}
-		else {
-			selectedOptionIndex = OptionCount - 1;
-		}
-	}
-
-	void MoveDown() {
-		if (selectedOptionIndex < OptionCount - 1) {
-			selectedOptionIndex++;
-		}
-		else {
-			selectedOptionIndex = 0;
-		}
-	}
-
-	void Render() {
 		window.clear();
-
-		for (int i = 0; i < OptionCount; ++i) {
-			text = menuTexts[i];
-			if (i == selectedOptionIndex) {
-				text.setFillColor(sf::Color::Red);
-			}
-			else {
-				text.setFillColor(sf::Color::White);
-			}
-			window.draw(text);
-		}
-
+		window.draw(grajText);
+		window.draw(wynikiText);
+		window.draw(oGrzeText);
+		window.draw(wyjdzText);
 		window.display();
 	}
-};
+}
 
 int main() {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "Gra 2D Menu");
+	RenderWindow window(VideoMode(1600, 1400), "Space shooter");
+	window.setFramerateLimit(60);
 
-	GameMenu gameMenu(window);
-	MenuOption selectedOption = gameMenu.Run();
+	while (window.isOpen()) {
+		Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				window.close();
 
-	// Tutaj mo¿esz dodaæ odpowiednie akcje dla wybranej opcji
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Key::Escape) {
+				// Wywo³aj menu po wciœniêciu klawisza Escape
+				wyswietl_menu(window);
+			}
+		}
+
+		window.clear();
+		// ... (Pozosta³a czêœæ gry, np. nowa_gra())
+		window.display();
+	}
 
 	return 0;
 }
-

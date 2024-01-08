@@ -4,11 +4,12 @@
 //
 //
 //#define Max_main_menu 4
-//class MainMenu
+//class MainMenu:
+//	public State
 //{
 //
 //public:
-//	MainMenu(float width, float height);
+//	
 //
 //
 //};

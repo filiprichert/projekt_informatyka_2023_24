@@ -7,6 +7,7 @@
 #include <math.h>
 #include <cstdlib>
 #include <vector>
+#include <fstream>
 
 using namespace sf;
 
@@ -15,10 +16,10 @@ class Missile {
 public:
 	Sprite shape;
 
-	Missile(Texture *texture, Vector2f pos) {
+	Missile(Texture *texture, Vector2f playerPosition) {
 		this->shape.setTexture(*texture);
 		this->shape.setScale(0.1f, 0.1f);
-		this->shape.setPosition(pos);
+		this->shape.setPosition(playerPosition.x + 0.5f * (texture->getSize().x * 0.1f - this->shape.getGlobalBounds().width), playerPosition.y);
 	}
 
 	~Missile() {}
@@ -34,9 +35,9 @@ public:
 	int HPMax;
 
 	std::vector<Missile> missile;
+	bool lastShotLeft;
 
-
-	Player(Texture *texture) {
+	Player(Texture *texture, Vector2u windowSize) {
 		this->HPMax = 10;
 		this->HP = this->HPMax;
 
@@ -44,8 +45,9 @@ public:
 		this->shape.setTexture(*texture);
 
 		this->shape.setScale(0.6f, 0.6f);
-		
-		
+		this->shape.setPosition((windowSize.x - this->shape.getGlobalBounds().width) / 2.f, windowSize.y - this->shape.getGlobalBounds().height);
+
+		this->lastShotLeft = true;
 	}
 	~Player() {}
 };
@@ -79,10 +81,10 @@ void nowa_gra()
 	window.setFramerateLimit(60);
 
 
-	/*sf::Music music;
+	sf::Music music;
 	if (!music.openFromFile("piu.mp3")) {
-		return -1;
-	}*/
+		
+	}
 
 	Font font;
 	font.loadFromFile("Fonts/Stereotones.otf");
@@ -110,9 +112,11 @@ void nowa_gra()
 	gameOverText.setPosition(100.f, window.getSize().y / 2);
 	gameOverText.setString("Koniec gry!!!");
 
+
+
 	//gracz init
 	int score = 0;
-	Player player(&playerTex);
+	Player player(&playerTex, window.getSize());
 	int shootTimer = 20;
 
 	Text hpText;
@@ -129,11 +133,22 @@ void nowa_gra()
 	eHpText.setCharacterSize(24);
 	eHpText.setFillColor(Color::Red);
 
+	// Aktualizacja czasu gry
+	Text timeText;
+	timeText.setFont(font);
+	timeText.setCharacterSize(20);
+	timeText.setFillColor(Color::Green);
+	timeText.setPosition(window.getSize().x - 200.f, 10.f);
 
+	Clock clock;
+	Time elapsed;
 
 
 	while (window.isOpen())
 	{
+		// Pomiar czasu gry
+		elapsed = clock.getElapsedTime();
+
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -142,8 +157,7 @@ void nowa_gra()
 		}
 		if (player.HP >= 0) {
 
-
-
+			int seconds = static_cast<int>(elapsed.asSeconds());
 			//Gracz 
 			if (Keyboard::isKeyPressed(Keyboard::W))
 				player.shape.move(0.f, -10.f);
@@ -161,9 +175,19 @@ void nowa_gra()
 				shootTimer++;
 
 			if (Keyboard::isKeyPressed(Keyboard::Space) && shootTimer >= 15) { //sprzelanie
-				player.missile.push_back(Missile(&missileTex, player.shape.getPosition()));
+				//player.missile.push_back(Missile(&missileTex, player.shape.getPosition()));
+				//shootTimer = 0;
+
+				if (player.lastShotLeft) {
+					player.missile.push_back(Missile(&missileTex, Vector2f(player.shape.getPosition().x, player.shape.getPosition().y)));
+				}
+				else {
+					player.missile.push_back(Missile(&missileTex, Vector2f(player.shape.getPosition().x + player.shape.getGlobalBounds().width/2, player.shape.getPosition().y)));
+				}
+
 				shootTimer = 0;
-				/*music.play();*/
+				player.lastShotLeft = !player.lastShotLeft;
+				music.play();
 			}
 
 			//kolizja z ekranem 
@@ -183,7 +207,7 @@ void nowa_gra()
 				//ruch
 				player.missile[i].shape.move(0.f, -20.f);
 
-
+				
 				//poza ekranem 
 				if (player.missile[i].shape.getPosition().x > window.getSize().x) {
 					player.missile.erase(player.missile.begin() + i);
@@ -239,9 +263,18 @@ void nowa_gra()
 			}
 			//UI Update 
 			scoreText.setString("Wynik:" + std::to_string(score));
+
+
+			// Dodaj kod do aktualizacji czasu gry
+			int hours = seconds / 3600;
+			int minutes = (seconds % 3600) / 60;
+			seconds = seconds % 60;
+			timeText.setString("Czas: " + std::to_string(hours) + "." + std::to_string(minutes) + "." + std::to_string(seconds));
+
 			//rysowanie
 		}
 		window.clear();
+
 		//gracz
 		window.draw(player.shape);
 
@@ -262,6 +295,8 @@ void nowa_gra()
 		//UI
 		window.draw(scoreText);
 		window.draw(hpText);
+		/*timeText.setString(timeString);*/
+		window.draw(timeText);
 
 		if (player.HP <= 0) {
 			window.draw(gameOverText);
@@ -273,99 +308,13 @@ void nowa_gra()
 	}
 }
 
-
-
-
-
-// Funkcja do wyœwietlania menu
-void wyswietl_menu(RenderWindow& window) {
-	Font font;
-	font.loadFromFile("Fonts/Stereotones.otf");
-
-	Text grajText, wynikiText, oGrzeText, wyjdzText;
-	grajText.setFont(font);
-	grajText.setCharacterSize(40);
-	grajText.setFillColor(Color::White);
-	grajText.setString("Graj");
-	grajText.setPosition(600.f, 300.f);
-
-	wynikiText.setFont(font);
-	wynikiText.setCharacterSize(40);
-	wynikiText.setFillColor(Color::White);
-	wynikiText.setString("Wyniki");
-	wynikiText.setPosition(600.f, 400.f);
-
-	oGrzeText.setFont(font);
-	oGrzeText.setCharacterSize(40);
-	oGrzeText.setFillColor(Color::White);
-	oGrzeText.setString("O Grze");
-	oGrzeText.setPosition(600.f, 500.f);
-
-	wyjdzText.setFont(font);
-	wyjdzText.setCharacterSize(40);
-	wyjdzText.setFillColor(Color::White);
-	wyjdzText.setString("Wyjdz");
-	wyjdzText.setPosition(600.f, 600.f);
-
-	while (window.isOpen()) {
-		Event event;
-		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
-				window.close();
-
-			if (event.type == Event::MouseButtonPressed) {
-				if (event.mouseButton.button == Mouse::Left) {
-					Vector2f mousePos = window.mapPixelToCoords(Mouse::getPosition(window));
-					if (grajText.getGlobalBounds().contains(mousePos)) {
-						// Opcja Graj - wybór poziomu trudnoœci
-						// ... (Dodaj kod wybieraj¹cy poziom trudnoœci)
-					}
-					else if (wynikiText.getGlobalBounds().contains(mousePos)) {
-						// Opcja Wyniki - wyœwietlanie wyników
-						// ... (Dodaj kod wyœwietlaj¹cy wyniki)
-					}
-					else if (oGrzeText.getGlobalBounds().contains(mousePos)) {
-						// Opcja O Grze - wyœwietlanie instrukcji
-						// ... (Dodaj kod wyœwietlaj¹cy instrukcjê)
-					}
-					else if (wyjdzText.getGlobalBounds().contains(mousePos)) {
-						// Opcja Wyjdz - pytanie o potwierdzenie
-						return;
-					}
-				}
-			}
-		}
-
-		window.clear();
-		window.draw(grajText);
-		window.draw(wynikiText);
-		window.draw(oGrzeText);
-		window.draw(wyjdzText);
-		window.display();
-	}
-}
-
 int main() {
-	RenderWindow window(VideoMode(1600, 1400), "Space shooter");
-	window.setFramerateLimit(60);
-	 
-	while (window.isOpen()) {
-		Event event;
-		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
-				window.close();
-
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Key::Escape) {
-				// Wywo³aj menu po wciœniêciu klawisza Escape
-				wyswietl_menu(window);
-			}
-		}
-
-		window.clear();
-		wyswietl_menu(window);
-		// ... (Pozosta³a czêœæ gry, np. nowa_gra())
-		window.display();
-	}
-
+	nowa_gra();
 	return 0;
 }
+
+
+
+
+
+

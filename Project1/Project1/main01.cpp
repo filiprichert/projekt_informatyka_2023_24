@@ -71,7 +71,7 @@ public:
 };
 
 
-void nowa_gra(RenderWindow& window)
+void nowa_gra()
 {
 	srand(time(NULL));
 
@@ -362,6 +362,7 @@ int main() {
 		}
 
 		window.clear();
+		wyswietl_menu(window);
 		// ... (Pozosta³a czêœæ gry, np. nowa_gra())
 		window.display();
 	}

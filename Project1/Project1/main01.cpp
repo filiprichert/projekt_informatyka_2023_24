@@ -348,7 +348,7 @@ void wyswietl_menu(RenderWindow& window) {
 int main() {
 	RenderWindow window(VideoMode(1600, 1400), "Space shooter");
 	window.setFramerateLimit(60);
-
+	 
 	while (window.isOpen()) {
 		Event event;
 		while (window.pollEvent(event)) {

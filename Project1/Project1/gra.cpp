@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <vector>
 #include <fstream>
+#include "Game.h"
 
 using namespace sf;
 
@@ -18,7 +19,7 @@ public:
 
 	Missile(Texture *texture, Vector2f playerPosition) {
 		this->shape.setTexture(*texture);
-		this->shape.setScale(0.1f, 0.1f);
+		this->shape.setScale(0.2f, 0.2f);
 		this->shape.setPosition(playerPosition.x + 0.5f * (texture->getSize().x * 0.1f - this->shape.getGlobalBounds().width), playerPosition.y);
 	}
 
@@ -44,7 +45,7 @@ public:
 		this->texture = texture;
 		this->shape.setTexture(*texture);
 
-		this->shape.setScale(0.6f, 0.6f);
+		this->shape.setScale(0.2f, 0.2f);
 		this->shape.setPosition((windowSize.x - this->shape.getGlobalBounds().width) / 2.f, windowSize.y - this->shape.getGlobalBounds().height);
 
 		this->lastShotLeft = true;
@@ -77,7 +78,7 @@ void nowa_gra()
 {
 	srand(time(NULL));
 
-	RenderWindow window(VideoMode(1600, 1400), "Space shooter");
+	RenderWindow window(VideoMode(1400, 1200), "Space shooter");
 	window.setFramerateLimit(60);
 
 
@@ -85,6 +86,14 @@ void nowa_gra()
 	if (!music.openFromFile("piu.mp3")) {
 		
 	}
+
+	Texture backgroundTex;
+	backgroundTex.loadFromFile("Tekstury/poziom.png");
+	backgroundTex.setRepeated(true);
+	Sprite background;
+	background.setTexture(backgroundTex);
+	background.setScale(static_cast<float>(window.getSize().x) / backgroundTex.getSize().x,
+		static_cast<float>(window.getSize().y) / backgroundTex.getSize().y);
 
 	Font font;
 	font.loadFromFile("Fonts/Stereotones.otf");
@@ -157,6 +166,8 @@ void nowa_gra()
 		}
 		if (player.HP >= 0) {
 
+
+
 			int seconds = static_cast<int>(elapsed.asSeconds());
 			//Gracz 
 			if (Keyboard::isKeyPressed(Keyboard::W))
@@ -182,7 +193,7 @@ void nowa_gra()
 					player.missile.push_back(Missile(&missileTex, Vector2f(player.shape.getPosition().x, player.shape.getPosition().y)));
 				}
 				else {
-					player.missile.push_back(Missile(&missileTex, Vector2f(player.shape.getPosition().x + player.shape.getGlobalBounds().width/2, player.shape.getPosition().y)));
+					player.missile.push_back(Missile(&missileTex, Vector2f(player.shape.getPosition().x + player.shape.getGlobalBounds().width, player.shape.getPosition().y)));
 				}
 
 				shootTimer = 0;
@@ -236,10 +247,10 @@ void nowa_gra()
 
 
 			//Wrog
-			if (enemySpawnTimer < 25)
+			if (enemySpawnTimer < 45)
 				enemySpawnTimer++;
 
-			if (enemySpawnTimer >= 25) {
+			if (enemySpawnTimer >= 45) {
 				enemies.push_back(Enemy(&enemyTex, window.getSize()));
 				enemySpawnTimer = 0;
 			}
@@ -273,7 +284,13 @@ void nowa_gra()
 
 			//rysowanie
 		}
+
+	
+
 		window.clear();
+		
+		//tlo
+		window.draw(background);
 
 		//gracz
 		window.draw(player.shape);
@@ -297,6 +314,7 @@ void nowa_gra()
 		window.draw(hpText);
 		/*timeText.setString(timeString);*/
 		window.draw(timeText);
+
 
 		if (player.HP <= 0) {
 			window.draw(gameOverText);

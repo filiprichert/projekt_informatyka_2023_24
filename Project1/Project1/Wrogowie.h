@@ -1,4 +1,6 @@
-#pragma once
+#ifndef WROGOWIE
+#define WROGOWIE
+
 
 #include "Game.h"
 #include "MainMenu.h"
@@ -12,3 +14,5 @@ public:
 	int HP;
 	int HPMax;
 };
+
+#endif WROGOWIE

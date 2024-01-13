@@ -1,4 +1,6 @@
-#pragma once
+#ifndef ASTEROID
+#define ASTEROID
+
 
 #include "Game.h"
 class Asteroid
@@ -18,3 +20,4 @@ public:
 	int size;
 };
 
+#endif ASTEROID

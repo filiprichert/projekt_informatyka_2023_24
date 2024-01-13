@@ -1,4 +1,5 @@
-#pragma once
+#ifndef POCISKI 
+#define POCISKI
 
 #include "Game.h"
 #include "MainMenu.h"
@@ -14,3 +15,4 @@ public:
     Missile() {};
 };
 
+#endif POCISKI

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ESC
+#define ESC
 
 #include "MainMenu.h"
 
@@ -23,3 +24,4 @@ private:
 
 };
 
+#endif ESC

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME
+#define GAME
 
 
 
@@ -16,9 +17,11 @@ public:
     ~Game();
 
     void nowa_gra();
+
 private:
     Music music;
     RenderWindow& window;
 };
 
 
+#endif GAME

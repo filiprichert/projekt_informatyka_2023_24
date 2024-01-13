@@ -1,4 +1,6 @@
-#pragma once
+#ifndef POZIOM
+#define POZIOM
+
 
 #include "Esc.h"
 #include "MainMenu.h"
@@ -29,3 +31,4 @@ private:
 
 };
 
+#endif POZIOM

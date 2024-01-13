@@ -1,9 +1,12 @@
-#pragma once
+#ifndef GRACZ
+#define GRACZ
 
 #include "Game.h"
-#include "Pociski.h"
+
 #include "MainMenu.h"
 
+#include "Pociski.h"
+class Missile;
 class Player {
 public:
 	Player(sf::Texture* texture, sf::Vector2u playerPosition);
@@ -19,3 +22,4 @@ public:
 	bool lastShotLeft;
 };
 
+#endif GRACZ

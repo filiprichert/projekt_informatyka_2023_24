@@ -1,5 +1,5 @@
-#pragma once
-
+#ifndef MENU
+#define MENU
 
 
 #include <SFML/Graphics.hpp>
@@ -47,3 +47,4 @@ private:
 	void handleMouseHover(int x, int y);
 };
 
+#endif MENU

@@ -1,130 +1,21 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <stdio.h>
-#include <SFML\Window.hpp>
-#include <SFML\System.hpp>
-#include <SFML/Audio.hpp>
-#include <math.h>
-#include <cstdlib>
-#include <vector>
-#include <fstream>
+#include "Game.h"
+#include "MainMenu.h"
+#include "Poziom.h"
+#include "Asteroidy.h"
+#include "Gracz.h"
+#include "Wrogowie.h"
+#include "Pociski.h"
 
+Game::Game(sf::RenderWindow& window) : window(window) {}
 
-using namespace sf;
+Game::~Game() {}
 
-class Missile {
-
-public:
-	Sprite shape;
-
-	Missile(Texture *texture, Vector2f playerPosition) {
-		this->shape.setTexture(*texture);
-		this->shape.setScale(0.2f, 0.2f);
-		this->shape.setPosition(playerPosition.x + 0.5f * (texture->getSize().x * 0.1f - this->shape.getGlobalBounds().width), playerPosition.y);
-	}
-
-	~Missile() {}
-};
-
-
-class Player {
-
-public:
-	Sprite shape;
-	Texture *texture;
-	int HP;
-	int HPMax;
-
-	std::vector<Missile> missile;
-
-	bool lastShotLeft;
-
-	Player(Texture *texture, Vector2u windowSize) {
-		this->HPMax = 10;
-		this->HP = this->HPMax;
-
-		this->texture = texture;
-		this->shape.setTexture(*texture);
-
-		this->shape.setScale(0.2f, 0.2f);
-		this->shape.setPosition((windowSize.x - this->shape.getGlobalBounds().width) / 2.f, windowSize.y - this->shape.getGlobalBounds().height);
-
-		this->lastShotLeft = true;
-	}
-	~Player() {}
-};
-
-class Enemy {
-
-public:
-	Sprite shape;
-
-	int HP;
-	int HPMax;
-
-	Enemy(Texture* texture, Vector2u windowSize) {
-		this->HPMax = rand() % 3 + 1;
-		/*this->HPMax = INT32_MAX;*/
-		this->HP = this->HPMax;
-
-		this->shape.setTexture(*texture);
-		this->shape.setScale(0.2f, 0.2f);
-		this->shape.setPosition(rand() % (int)(windowSize.x - this->shape.getGlobalBounds().width), -50.0f);
-	}
-	~Enemy(){}
-};
-
-class Asteroid {
-
-public:
-	Sprite shape;
-	Vector2f movement;
-
-	float rotationSpeed;
-	int HP;
-	int HPMax;
-	int side;
-	float angle;
-	int size;
-
-	Asteroid(Texture* texture, Vector2u windowSize) {
-		this->HPMax = 1;
-		this->HP = this->HPMax;
-
-		this->shape.setTexture(*texture);
-
-		
-		this->shape.setScale(0.2f, 0.2f);
-
-		this->shape.setOrigin(this->shape.getLocalBounds().width / 2.f, this->shape.getLocalBounds().height / 2.f);
-
-		this->side = rand() % 2;
-		this->angle = (side == 0) ? rand() % 45 + 45.f : -(rand() % 45 + 45.f);
-		if (side == 0) { // Lewy bok
-			this->shape.setPosition(-30.0f, rand() % (int)(windowSize.y - this->shape.getGlobalBounds().height));
-		}
-		else { // Prawy bok
-			this->shape.setPosition(windowSize.x - this->shape.getGlobalBounds().width + 50.0f, rand() % (int)(windowSize.y - this->shape.getGlobalBounds().height));
-		}
-		
-		
-	}
-	~Asteroid() {}
-};
-
-void nowa_gra()
-{
+void Game::nowa_gra() {
 	srand(time(NULL));
-
-	RenderWindow window(VideoMode(1600, 1400), "Space shooter", Style::Titlebar | Style::Close);
-	window.setFramerateLimit(60);
-
-
 	Music music;
 	music.openFromFile("piu.mp3");
-		
-
 	Texture backgroundTex;
+
 	backgroundTex.loadFromFile("Tekstury/poziom.png");
 	backgroundTex.setRepeated(true);
 	Sprite background;
@@ -232,13 +123,13 @@ void nowa_gra()
 				shootTimer++;
 
 			if (Keyboard::isKeyPressed(Keyboard::Space) && shootTimer >= 15) { //sprzelanie
-				
+
 
 				if (player.lastShotLeft) {
 					player.missile.push_back(Missile(&missileTex, Vector2f(player.shape.getPosition().x, player.shape.getPosition().y)));
 				}
 				else {
-					player.missile.push_back(Missile(&missileTex, Vector2f(player.shape.getPosition().x + player.shape.getGlobalBounds().width-10.0f, player.shape.getPosition().y)));
+					player.missile.push_back(Missile(&missileTex, Vector2f(player.shape.getPosition().x + player.shape.getGlobalBounds().width - 10.0f, player.shape.getPosition().y)));
 				}
 
 				shootTimer = 0;
@@ -263,7 +154,7 @@ void nowa_gra()
 				//ruch
 				player.missile[i].shape.move(0.f, -20.f);
 
-				
+
 				//poza ekranem 
 				if (player.missile[i].shape.getPosition().x > window.getSize().x) {
 					player.missile.erase(player.missile.begin() + i);
@@ -319,7 +210,7 @@ void nowa_gra()
 			}
 
 			// Asteroid
-			if (asteroidSpawnTimer < 45)  
+			if (asteroidSpawnTimer < 45)
 				asteroidSpawnTimer++;
 
 			if (asteroidSpawnTimer >= 45) {
@@ -333,11 +224,11 @@ void nowa_gra()
 				{
 					asteroids[i].shape.move(4.0f, 0.0f);
 				}
-				else 
+				else
 				{
 					asteroids[i].shape.move(-4.0f, 0.0f);
 				}
-				float speed = rand() % 3; 
+				float speed = rand() % 3;
 
 				// Oblicz sk³adowe x i y na podstawie k¹ta
 				float deltaX = speed * cos(asteroids[i].angle * 3.14 / 180);
@@ -362,12 +253,12 @@ void nowa_gra()
 					if (player.missile[k].shape.getGlobalBounds().intersects(asteroids[i].shape.getGlobalBounds())) {
 						player.missile.erase(player.missile.begin() + k);
 						asteroids.erase(asteroids.begin() + i);
-						score++; 
+						score++;
 						break;
 					}
 				}
 
-				float rotationSpeed = 0.5f; 
+				float rotationSpeed = 0.5f;
 				asteroids[i].shape.rotate(rotationSpeed);
 			}
 
@@ -384,10 +275,10 @@ void nowa_gra()
 			//rysowanie
 		}
 
-	
+
 
 		window.clear();
-		
+
 		//tlo
 		window.draw(background);
 
@@ -428,9 +319,3 @@ void nowa_gra()
 
 	}
 }
-
-
-
-
-
-

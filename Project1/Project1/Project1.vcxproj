@@ -130,13 +130,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Asteroidy.cpp" />
+    <ClCompile Include="Esc.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="gra.cpp" />
+    <ClCompile Include="Gracz.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="OGrze.cpp" />
+    <ClCompile Include="Pociski.cpp" />
+    <ClCompile Include="Pomoc.cpp" />
+    <ClCompile Include="Poziom.cpp" />
+    <ClCompile Include="szkielet.cpp" />
     <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Wrogowie.cpp" />
+    <ClCompile Include="Wyniki.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Asteroidy.h" />
+    <ClInclude Include="Esc.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Gracz.h" />
     <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="OGrze.h" />
+    <ClInclude Include="Pociski.h" />
+    <ClInclude Include="Pomoc.h" />
+    <ClInclude Include="Poziom.h" />
+    <ClInclude Include="Wrogowie.h" />
+    <ClInclude Include="Wyniki.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

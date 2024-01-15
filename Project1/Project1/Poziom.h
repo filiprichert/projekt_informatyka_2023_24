@@ -5,6 +5,8 @@
 #include "Esc.h"
 #include "MainMenu.h"
 #include "Game.h"
+
+class Game;
 class Poziom
 {
 public:
@@ -27,8 +29,8 @@ private:
 	void render();
 	void handleMouseClick(int x, int y);
 	void handleMouseHover(int x, int y);
+	Game* game;
 	
-
 };
 
 #endif POZIOM

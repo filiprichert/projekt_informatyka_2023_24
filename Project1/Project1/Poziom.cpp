@@ -3,7 +3,7 @@
 #include "MainMenu.h"
 #include "Game.h"
 
-Poziom::Poziom(sf::RenderWindow& window) : window(window) { setup(); }
+Poziom::Poziom(sf::RenderWindow& window) : window(window) { setup();}
 
 void Poziom::MainPoziom() {
     while (window.isOpen()) {
@@ -28,15 +28,15 @@ void Poziom::processEvents() {
             handleMouseHover(event.mouseMove.x, event.mouseMove.y);
         }
 
-        if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-            Esc Esc;
-            Esc.MainEsc();
-        }
+        //if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+        //    Menu Menu(window);
+        //    Menu.MainMenu();
+        //}
     }
 }
 
 void Poziom::update() {
-    // Dodaj logikê aktualizacji, jeœli potrzebujesz
+    
 }
 
 void Poziom::render() {
@@ -84,13 +84,15 @@ void Poziom::handleMouseHover(int x, int y) {
 
 void Poziom::handleMouseClick(int x, int y) {
     if (normalText.getGlobalBounds().contains(x, y)) {
-        Game game(window);
-        game.nowa_gra();
-       
+        game = new Game(window);
+        game -> nowa_gra(NORMAL);
+        delete game;
     }
 
     if (hardText.getGlobalBounds().contains(x, y)) {
-        //
+        game = new Game(window);
+        game->nowa_gra(HARD);
+        delete game;
         
     }
 

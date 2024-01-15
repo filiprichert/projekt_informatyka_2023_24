@@ -1,6 +1,9 @@
 #include "MainMenu.h"
 #include "Esc.h"
 #include "Poziom.h"
+#include "MenuGame.h"
+#include "OGrze.h"
+#include "Wyniki.h"
 
 Menu::Menu(sf::RenderWindow& window) : window(window) { setup(); }
 
@@ -36,7 +39,7 @@ void Menu::processEvents() {
 }
 
 void Menu::update() {
-    // Dodaj logikê aktualizacji, jeœli potrzebujesz
+    
 }
 
 void Menu::render() {
@@ -56,7 +59,10 @@ void Menu::render() {
     window.draw(aboutText);
     window.draw(exitText);
 
+
+    /*drawWhiteStar();*/
     window.display();
+    
 }
 
 void Menu::handleMouseHover(int x, int y) {
@@ -92,19 +98,21 @@ void Menu::handleMouseHover(int x, int y) {
 void Menu::handleMouseClick(int x, int y) {
     if (playText.getGlobalBounds().contains(x, y)) {
         
-        Poziom poziom(window);
-        poziom.MainPoziom();
+        Poziom* poziom = new Poziom(window);
+        poziom->MainPoziom();
+        delete poziom;
 
     }
 
     if (scoresText.getGlobalBounds().contains(x, y)) {
-        // Obs³uga klikniêcia dla opcji "Wyniki"
-        Menu menu(window);
+        //Wyniki wyniki(window);
+        //wyniki.wyswietl_najlepsze_wyniki();
+        
     }
 
     if (aboutText.getGlobalBounds().contains(x, y)) {
-        // Obs³uga klikniêcia dla opcji "O Grze"
-        Menu menu(window);
+        OGrze ogrze(window);
+        ogrze.MainOGrze();
     }
 
     if (exitText.getGlobalBounds().contains(x, y)) {
@@ -150,4 +158,23 @@ void Menu::setup() {
     exitText.setPosition(100, 250);
 
 
+}
+
+void Menu::drawWhiteStar() {
+    sf::ConvexShape star;
+    star.setPointCount(10);
+    star.setPoint(0, sf::Vector2f(400, 100));
+    star.setPoint(1, sf::Vector2f(450, 300));
+    star.setPoint(2, sf::Vector2f(600, 300));
+    star.setPoint(3, sf::Vector2f(475, 375));
+    star.setPoint(4, sf::Vector2f(525, 525));
+    star.setPoint(5, sf::Vector2f(400, 450));
+    star.setPoint(6, sf::Vector2f(275, 525));
+    star.setPoint(7, sf::Vector2f(325, 375));
+    star.setPoint(8, sf::Vector2f(200, 300));
+    star.setPoint(9, sf::Vector2f(350, 300));
+
+    star.setFillColor(sf::Color::White);
+
+    window.draw(star);
 }

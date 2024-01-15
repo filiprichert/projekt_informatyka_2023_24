@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <vector>
 #include <fstream>
+#include <iomanip>
 
 
 using namespace std;
@@ -45,6 +46,8 @@ private:
 	void render();
 	void handleMouseClick(int x, int y);
 	void handleMouseHover(int x, int y);
+	void drawWhiteStar();
+	
 };
 
 #endif MENU

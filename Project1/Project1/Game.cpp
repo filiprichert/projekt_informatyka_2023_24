@@ -5,18 +5,46 @@
 #include "Gracz.h"
 #include "Wrogowie.h"
 #include "Pociski.h"
+#include "MenuGame.h"
 
-Game::Game(sf::RenderWindow& window) : window(window) {}
+Game::Game(sf::RenderWindow& window) : window(window) { czygra = true; }
 
 Game::~Game() {}
 
-void Game::nowa_gra() {
+
+
+void Game::nowa_gra(trudnosc t) {
+
+	
+
 	srand(time(NULL));
 	Music music;
+	Music music1;
 	music.openFromFile("piu.mp3");
-	Texture backgroundTex;
+	music1.openFromFile("SC2.mp3");
+	music1.getLoop();
+	music1.play();
 
-	backgroundTex.loadFromFile("Tekstury/poziom.png");
+	Font font;
+	Texture backgroundTex;
+	Texture asteroidTex;
+	Texture playerTex;
+	Texture enemyTex;
+	Texture missileTex;
+	asteroidTex.loadFromFile("Tekstury/asteroida.png");
+
+
+
+	if (t == NORMAL) {
+		backgroundTex.loadFromFile("Tekstury/poziom.png");
+
+	}
+	else
+	{
+		backgroundTex.loadFromFile("Tekstury/2poziom.png");
+		
+	}
+	
 	backgroundTex.setRepeated(true);
 	Sprite background;
 	background.setTexture(backgroundTex);
@@ -24,20 +52,19 @@ void Game::nowa_gra() {
 		static_cast<float>(window.getSize().x) / backgroundTex.getSize().x,
 		static_cast<float>(window.getSize().y) / backgroundTex.getSize().y);
 
-	Font font;
+	
 	font.loadFromFile("Fonts/Stereotones.otf");
 
-	Texture playerTex;
+	
 	playerTex.loadFromFile("Tekstury/statek.png");
 
-	Texture enemyTex;
+	
 	enemyTex.loadFromFile("Tekstury/wrog.png");
 
-	Texture missileTex;
+	
 	missileTex.loadFromFile("Tekstury/pocisk1.png");
 
-	Texture asteroidTex;
-	asteroidTex.loadFromFile("Tekstury/asteroida.png");
+	
 
 	//UI init
 	Text scoreText;
@@ -88,12 +115,12 @@ void Game::nowa_gra() {
 
 	Clock clock;
 	Time elapsed;
-
-
-	while (window.isOpen())
+	
+	while (window.isOpen() && czygra)
 	{
 		// Pomiar czasu gry
 		elapsed = clock.getElapsedTime();
+
 
 		Event event;
 		while (window.pollEvent(event))
@@ -101,6 +128,18 @@ void Game::nowa_gra() {
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
+
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+
+			MenuGame menuG(this);
+			menuG.MenuG();
+		}
+
+		if (Keyboard::isKeyPressed(Keyboard::F1)) {
+			Help help;
+			help.GameHelp();
+		}
+
 		if (player.HP >= 0) {
 
 
@@ -134,7 +173,7 @@ void Game::nowa_gra() {
 
 				shootTimer = 0;
 				player.lastShotLeft = !player.lastShotLeft;
-				/*music.play();*/
+				music.play();
 			}
 
 			//kolizja z ekranem 
@@ -208,60 +247,60 @@ void Game::nowa_gra() {
 				}
 
 			}
+			if (t == HARD) {
+				// Asteroid
+				if (asteroidSpawnTimer < 45)
+					asteroidSpawnTimer++;
 
-			// Asteroid
-			if (asteroidSpawnTimer < 45)
-				asteroidSpawnTimer++;
-
-			if (asteroidSpawnTimer >= 45) {
-				asteroids.push_back(Asteroid(&asteroidTex, window.getSize()));
-				asteroidSpawnTimer = 0;
-			}
-
-
-			for (size_t i = 0; i < asteroids.size(); i++) {
-				if (asteroids[i].side == 0)
-				{
-					asteroids[i].shape.move(4.0f, 0.0f);
-				}
-				else
-				{
-					asteroids[i].shape.move(-4.0f, 0.0f);
-				}
-				float speed = rand() % 3;
-
-				// Oblicz sk³adowe x i y na podstawie k¹ta
-				float deltaX = speed * cos(asteroids[i].angle * 3.14 / 180);
-				float deltaY = speed * sin(asteroids[i].angle * 3.14 / 180);
-
-				asteroids[i].shape.move(deltaX, deltaY);
-
-				if (asteroids[i].shape.getPosition().y >= window.getSize().y) {
-					asteroids.erase(asteroids.begin() + i);
-					break;
+				if (asteroidSpawnTimer >= 45) {
+					asteroids.push_back(Asteroid(&asteroidTex, window.getSize()));
+					asteroidSpawnTimer = 0;
 				}
 
-				// Kolizja z graczem
-				if (asteroids[i].shape.getGlobalBounds().intersects(player.shape.getGlobalBounds())) {
-					asteroids.erase(asteroids.begin() + i);
-					player.HP--; // Gracz traci jedno ¿ycie
-					break;
-				}
 
-				// Kolizja z pociskiem
-				for (size_t k = 0; k < player.missile.size(); k++) {
-					if (player.missile[k].shape.getGlobalBounds().intersects(asteroids[i].shape.getGlobalBounds())) {
-						player.missile.erase(player.missile.begin() + k);
+				for (size_t i = 0; i < asteroids.size(); i++) {
+					if (asteroids[i].side == 0)
+					{
+						asteroids[i].shape.move(4.0f, 0.0f);
+					}
+					else
+					{
+						asteroids[i].shape.move(-4.0f, 0.0f);
+					}
+					float speed = rand() % 3;
+
+					// Oblicz sk³adowe x i y na podstawie k¹ta
+					float deltaX = speed * cos(asteroids[i].angle * 3.14 / 180);
+					float deltaY = speed * sin(asteroids[i].angle * 3.14 / 180);
+
+					asteroids[i].shape.move(deltaX, deltaY);
+
+					if (asteroids[i].shape.getPosition().y >= window.getSize().y) {
 						asteroids.erase(asteroids.begin() + i);
-						score++;
 						break;
 					}
+
+					// Kolizja z graczem
+					if (asteroids[i].shape.getGlobalBounds().intersects(player.shape.getGlobalBounds())) {
+						asteroids.erase(asteroids.begin() + i);
+						player.HP--; // Gracz traci jedno ¿ycie
+						break;
+					}
+
+					// Kolizja z pociskiem
+					for (size_t k = 0; k < player.missile.size(); k++) {
+						if (player.missile[k].shape.getGlobalBounds().intersects(asteroids[i].shape.getGlobalBounds())) {
+							player.missile.erase(player.missile.begin() + k);
+							asteroids.erase(asteroids.begin() + i);
+							score++;
+							break;
+						}
+					}
+
+					float rotationSpeed = 0.5f;
+					asteroids[i].shape.rotate(rotationSpeed);
 				}
-
-				float rotationSpeed = 0.5f;
-				asteroids[i].shape.rotate(rotationSpeed);
 			}
-
 
 			//UI Update 
 			scoreText.setString("Wynik:" + std::to_string(score));
@@ -272,11 +311,11 @@ void Game::nowa_gra() {
 			seconds = seconds % 60;
 			timeText.setString("Czas: " + std::to_string(minutes) + "." + std::to_string(seconds));
 
-			//rysowanie
+
 		}
 
 
-
+		//rysowanie
 		window.clear();
 
 		//tlo
@@ -298,24 +337,44 @@ void Game::nowa_gra() {
 			window.draw(eHpText);
 			window.draw(enemies[i].shape);
 		}
-
-		for (size_t i = 0; i < asteroids.size(); i++)
-		{
-			window.draw(asteroids[i].shape);
+		if (t == HARD) {
+			for (size_t i = 0; i < asteroids.size(); i++)
+			{
+				window.draw(asteroids[i].shape);
+			}
 		}
-
 		//UI
 		window.draw(scoreText);
 		window.draw(hpText);
 		window.draw(timeText);
 
-
 		if (player.HP <= 0) {
+			int minutes = static_cast<int>(elapsed.asSeconds()) / 60;
+			int seconds = static_cast<int>(elapsed.asSeconds()) % 60;
+			zapisz_wynik_i_czas_do_pliku(score, minutes, seconds);
+
+			music1.stop();
+
 			window.draw(gameOverText);
+			MenuGame menuG(this);
+			menuG.MenuG();
 		}
 
 
 		window.display();
 
 	}
+
+}
+
+void Game::zapisz_wynik_i_czas_do_pliku(int wynik, int czas_minuty, int czas_sekundy) {
+	ofstream plik("wyniki.txt", std::ios::app);  
+
+	plik.is_open();
+
+	
+	plik << "Wynik: " << wynik << "\t Czas: " << czas_minuty << "m " << czas_sekundy << "s" << std::endl;
+
+	
+	plik.close();
 }

@@ -8,7 +8,7 @@
 
 class Missile {
 public:
-    Missile(sf::Texture* texture, Vector2f playerPosition);
+    Missile(Texture* texture, Vector2f playerPosition);
     ~Missile();
 
     Sprite shape;

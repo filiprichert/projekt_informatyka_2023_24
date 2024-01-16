@@ -9,7 +9,7 @@
 class Missile;
 class Player {
 public:
-	Player(sf::Texture* texture, sf::Vector2u playerPosition);
+	Player(Texture* texture, Vector2u playerPosition);
 	~Player();
 
 	Sprite shape;
@@ -17,7 +17,7 @@ public:
 	int HP;
 	int HPMax;
 
-	std::vector<Missile> missile;
+	vector<Missile> missile;
 
 	bool lastShotLeft;
 };

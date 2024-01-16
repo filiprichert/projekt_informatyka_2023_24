@@ -9,7 +9,7 @@ public:
 	Sprite shape;
 	Vector2f movement;
 
-    Asteroid(sf::Texture* texture, sf::Vector2u windowSize);
+    Asteroid(Texture* texture, Vector2u windowSize);
 	~Asteroid();
 
 	float rotationSpeed;

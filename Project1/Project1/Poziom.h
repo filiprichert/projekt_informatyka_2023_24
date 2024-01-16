@@ -25,11 +25,11 @@ private:
 	Sprite backgroundSprite;
 
 	void processEvents();
-	void update();
 	void render();
 	void handleMouseClick(int x, int y);
 	void handleMouseHover(int x, int y);
 	Game* game;
+	
 	
 };
 

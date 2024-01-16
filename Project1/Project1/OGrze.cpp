@@ -1,4 +1,5 @@
 #include "OGrze.h"
+#include "Esc.h"
 
 OGrze::OGrze(sf::RenderWindow& window) : window(window) { setup(); }
 
@@ -23,6 +24,10 @@ void OGrze::processEvents() {
         }
         if (event.type == Event::MouseMoved) {
             handleMouseHover(event.mouseMove.x, event.mouseMove.y);
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+            Esc Esc;
+            Esc.MainEsc();
         }
     }
 }

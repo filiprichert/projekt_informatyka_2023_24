@@ -1,5 +1,8 @@
-Wynik: 55	 Czas: 0m 40s
-Wynik: 55	 Czas: 0m 44s
-Wynik: 55	 Czas: 0m 45s
-Wynik: 55	 Czas: 0m 48s
-Wynik: 12	 Czas: 0m 33s
+
+4	0	9
+9	0	14
+0	0	8
+6	0	8
+35	0	44
+0	0	6
+0	0	5

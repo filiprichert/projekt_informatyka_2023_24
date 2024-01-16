@@ -10,7 +10,6 @@ Menu::Menu(sf::RenderWindow& window) : window(window) { setup(); }
 void Menu::MainMenu() {
     while (window.isOpen()) {
         processEvents();
-        update();
         render();
         
     }
@@ -38,9 +37,7 @@ void Menu::processEvents() {
     }
 }
 
-void Menu::update() {
-    
-}
+
 
 void Menu::render() {
     window.clear();
@@ -60,7 +57,6 @@ void Menu::render() {
     window.draw(exitText);
 
 
-    /*drawWhiteStar();*/
     window.display();
     
 }
@@ -105,8 +101,8 @@ void Menu::handleMouseClick(int x, int y) {
     }
 
     if (scoresText.getGlobalBounds().contains(x, y)) {
-        //Wyniki wyniki(window);
-        //wyniki.wyswietl_najlepsze_wyniki();
+        Wyniki wyniki(window);
+        wyniki.wyswietl_najlepsze_wyniki();
         
     }
 

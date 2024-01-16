@@ -6,7 +6,7 @@
 
 MenuGame::MenuGame(Game* game) : window(sf::VideoMode(400, 300), "Game menu", Style::None) { this->game = game; czymenu = true; }
 
-void MenuGame::MenuG() {
+void MenuGame::MenuG(czyporaszka k) {
     while (window.isOpen() && czymenu) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -24,23 +24,32 @@ void MenuGame::MenuG() {
 
         }
         setup();
-        render();
+        render(k);
     }
 }
 
-void MenuGame::render() {
+void MenuGame::render(czyporaszka k) {
     window.clear();
 
+    gameOverText.setPosition(window.getSize().x / 2.0f - gameOverText.getLocalBounds().width / 2, window.getSize().y / 2.0f - gameOverText.getLocalBounds().height - 80);
     menuText.setPosition(window.getSize().x / 2.0f - menuText.getLocalBounds().width / 2, window.getSize().y / 2.0f - menuText.getLocalBounds().height - 80);
     exetText.setPosition(window.getSize().x / 2.0f - exetText.getLocalBounds().width / 2, window.getSize().y / 2.0f - exetText.getLocalBounds().height - 20);
     returnemenuText.setPosition(window.getSize().x / 2.0f - returnemenuText.getLocalBounds().width / 2, window.getSize().y / 2.0f - returnemenuText.getLocalBounds().height + 30);
     returneText.setPosition(window.getSize().x / 2.0f - returneText.getLocalBounds().width / 2, window.getSize().y / 2.0f - returneText.getLocalBounds().height + 80);
+    if(k == KONIEC){
 
-    window.draw(menuText);
-    window.draw(exetText);
-    window.draw(returnemenuText);
-    window.draw(returneText);
+        window.draw(gameOverText);
+        window.draw(exetText);
+        window.draw(returnemenuText);
+    }
+    else {
+      
+        window.draw(menuText);
+        window.draw(exetText);
+        window.draw(returnemenuText);
+        window.draw(returneText);
 
+    }
     window.display();
 }
 
@@ -67,9 +76,6 @@ void MenuGame::handleMouseHover(int x, int y) {
     }
 }
 
-//void MenuGame::AkcjaNaDrugimOknie() {
-//    drugieOkno.menu_game();
-//}
 
 void MenuGame::handleMouseClick(int x, int y) {
     if (exetText.getGlobalBounds().contains(x, y)) {
@@ -95,6 +101,11 @@ void MenuGame::setup() {
     menuText.setFont(font);
     menuText.setString("Menu");
     menuText.setCharacterSize(40);
+
+    gameOverText.setFont(font);
+    gameOverText.setString("Koniec Gry!!!");
+    gameOverText.setCharacterSize(40);
+    gameOverText.setFillColor(Color::Red);
 
     exetText.setFont(font);
     exetText.setString("Wyjdz z gry");

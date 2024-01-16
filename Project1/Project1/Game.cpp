@@ -72,15 +72,14 @@ void Game::nowa_gra(trudnosc t) {
 	scoreText.setCharacterSize(20);
 	scoreText.setFillColor(Color::Green);
 	scoreText.setPosition(10.f, 10.f);
+	
 
-	//koniec gry
 	Text gameOverText;
 	gameOverText.setFont(font);
+	gameOverText.setString("Koniec Gry!!!");
 	gameOverText.setCharacterSize(40);
 	gameOverText.setFillColor(Color::Red);
-	gameOverText.setPosition(100.f, window.getSize().y / 2);
-	gameOverText.setString("Koniec gry!!!");
-
+	gameOverText.setPosition(window.getSize().x / 2.0f - gameOverText.getLocalBounds().width / 2, window.getSize().y / 2.0f - gameOverText.getLocalBounds().height);
 
 
 	//gracz init
@@ -132,7 +131,8 @@ void Game::nowa_gra(trudnosc t) {
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
 
 			MenuGame menuG(this);
-			menuG.MenuG();
+			menuG.MenuG(INNE);
+			
 		}
 
 		if (Keyboard::isKeyPressed(Keyboard::F1)) {
@@ -140,7 +140,7 @@ void Game::nowa_gra(trudnosc t) {
 			help.GameHelp();
 		}
 
-		if (player.HP >= 0) {
+		if (player.HP > 0) {
 
 
 
@@ -309,7 +309,7 @@ void Game::nowa_gra(trudnosc t) {
 			// Dodaj kod do aktualizacji czasu gry
 			int minutes = seconds / 60;
 			seconds = seconds % 60;
-			timeText.setString("Czas: " + std::to_string(minutes) + "." + std::to_string(seconds));
+			timeText.setString("Czas: " + to_string(minutes) + "." + to_string(seconds));
 
 
 		}
@@ -348,16 +348,15 @@ void Game::nowa_gra(trudnosc t) {
 		window.draw(hpText);
 		window.draw(timeText);
 
-		if (player.HP <= 0) {
+		if (player.HP < 1) {
 			int minutes = static_cast<int>(elapsed.asSeconds()) / 60;
 			int seconds = static_cast<int>(elapsed.asSeconds()) % 60;
 			zapisz_wynik_i_czas_do_pliku(score, minutes, seconds);
 
 			music1.stop();
-
 			window.draw(gameOverText);
 			MenuGame menuG(this);
-			menuG.MenuG();
+			menuG.MenuG(KONIEC);
 		}
 
 
@@ -367,13 +366,13 @@ void Game::nowa_gra(trudnosc t) {
 
 }
 
-void Game::zapisz_wynik_i_czas_do_pliku(int wynik, int czas_minuty, int czas_sekundy) {
-	ofstream plik("wyniki.txt", std::ios::app);  
+void Game::zapisz_wynik_i_czas_do_pliku(int wynik, int minuty, int sekundy) {
+	ofstream plik("wyniki.txt", ios::app);  
 
 	plik.is_open();
 
 	
-	plik << "Wynik: " << wynik << "\t Czas: " << czas_minuty << "m " << czas_sekundy << "s" << std::endl;
+	plik << wynik << "\t" << minuty << "\t" << sekundy << std::endl;
 
 	
 	plik.close();

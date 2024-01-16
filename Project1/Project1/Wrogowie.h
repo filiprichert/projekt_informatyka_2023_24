@@ -7,7 +7,7 @@
 class Enemy
 {
 public:
-	Enemy(sf::Texture* texture, Vector2u windowSize);
+	Enemy(Texture* texture, Vector2u windowSize);
 	~Enemy();
 	Sprite shape;
 

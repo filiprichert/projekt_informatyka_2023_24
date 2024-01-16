@@ -1,6 +1,6 @@
 #include "Asteroidy.h"
 
-Asteroid::Asteroid(sf::Texture* texture, sf::Vector2u windowSize) {
+Asteroid::Asteroid(Texture* texture, Vector2u windowSize) {
 	this->HPMax = 1;
 	this->HP = this->HPMax;
 

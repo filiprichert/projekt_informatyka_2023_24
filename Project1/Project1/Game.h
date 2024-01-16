@@ -11,8 +11,10 @@
 #include "MainMenu.h"
 #include "Poziom.h"
 #include "Pomoc.h"
+
+
 enum trudnosc
-{
+{   
     NORMAL,
     HARD
 };

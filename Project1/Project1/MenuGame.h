@@ -3,11 +3,17 @@
 #include "MainMenu.h"
 #include "Game.h"
 
+enum czyporaszka
+{
+	KONIEC,
+	INNE
+	
+};
 class MenuGame
 {
 public:
 	MenuGame(Game* game);
-	void MenuG();
+	void MenuG(czyporaszka k);
 
 	
 private:
@@ -15,12 +21,13 @@ private:
 	Text exetText;
 	Text returnemenuText;
 	Text returneText;
+	Text gameOverText;
 	RenderWindow window;
 	Font font;
 	Game* game;
 
 	void setup();
-	void render();
+	void render(czyporaszka k);
 	void handleMouseClick(int x, int y);
 	void handleMouseHover(int x, int y);
 	

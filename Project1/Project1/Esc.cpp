@@ -3,11 +3,11 @@
 
 
 
-Esc::Esc() : window(sf::VideoMode(800, 200), "Exit Game?", Style::None) {}
+Esc::Esc() : window(VideoMode(800, 200), "Exit Game?", Style::None) {}
 
 void Esc::MainEsc() {
     while (window.isOpen()) {
-        sf::Event event;
+        Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();

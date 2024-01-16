@@ -1,8 +1,12 @@
 #include "Wrogowie.h"
 
 
-Enemy::Enemy(sf::Texture* texture, sf::Vector2u windowSize) {
+Enemy::Enemy(Texture* texture, Vector2u windowSize) {
+  
+    
+   
     this->HPMax = rand() % 3 + 1;
+ 
     this->HP = this->HPMax;
 
     this->shape.setTexture(*texture);

@@ -8,7 +8,6 @@ Poziom::Poziom(sf::RenderWindow& window) : window(window) { setup();}
 void Poziom::MainPoziom() {
     while (window.isOpen()) {
         processEvents();
-        update();
         render();
     }
 }
@@ -28,15 +27,11 @@ void Poziom::processEvents() {
             handleMouseHover(event.mouseMove.x, event.mouseMove.y);
         }
 
-        //if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-        //    Menu Menu(window);
-        //    Menu.MainMenu();
-        //}
+        if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+            Esc Esc;
+            Esc.MainEsc();
+        }
     }
-}
-
-void Poziom::update() {
-    
 }
 
 void Poziom::render() {
@@ -83,6 +78,7 @@ void Poziom::handleMouseHover(int x, int y) {
 }
 
 void Poziom::handleMouseClick(int x, int y) {
+
     if (normalText.getGlobalBounds().contains(x, y)) {
         game = new Game(window);
         game -> nowa_gra(NORMAL);

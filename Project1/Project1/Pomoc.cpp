@@ -66,7 +66,7 @@ void Help::setup() {
     infoText.setCharacterSize(30);
 
     znakiText.setFont(font2);
-    znakiText.setString("Poruszanie sie do przodu: W\nPoruszanie sie do tylu: S\nPoruszanie siê w lewo: A\nPoruszanie sie w prawo: D\nStrzelanie rakietami: Spacja");
+    znakiText.setString("Poruszanie sie do przodu: W\nPoruszanie sie do tylu: S\nPoruszanie sie w lewo: A\nPoruszanie sie w prawo: D\nStrzelanie rakietami: Spacja");
     znakiText.setCharacterSize(30);
 
     returneText.setFont(font1);
